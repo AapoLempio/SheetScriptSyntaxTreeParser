@@ -1,0 +1,81 @@
+
+    1. What is lexical analysis and how is it related to other parts in compilation?
+
+       Lexical analysis is the first phase in the functioning of a compiler. It's the base on which the other
+       functionality is built on. During lexical analysis a document, in this case sheetscript document, that contains
+       a programs code, is tokenized by the lexer in order to, so to speak, make sense of what was written. The code is
+       divided into small pieces very much like word in natural languages caller "tokens." Each type of token represents
+       a certain type of "word" such as a function name (e.g. Function_1) or character such as for example the plus (+)
+       or minus (-) operators. After the lexer has created the list of tokens, the next phase of the compilation called
+       syntax analysis can begin.
+
+
+    2. How is the lexical structure of the language expressed in the PLY tool? I.e., what parts are needed in the code
+    and how are they related to lexical rules of the language?
+
+       The PLY tool has been built for the tokenization of code. There are structures such as the tokens list, all the
+       functions for the different tokens and even the tokens definitions that are not referenced in my own code but are
+       handled wholly by the PLY's lexer. They are needed in the code when I decide which tokens are what in the
+       tokenization of the target code.
+
+
+    3. Explain how the following are recognized and handled in your code:
+
+       Keywords
+       The keywords are put in a dictionary called reserved and then added to the list called tokens an are recognized by using regular expressions in the python code.
+
+       Comments
+       Are not handled in any way other than taken note of.
+
+       Whitespace between tokens
+       They are identified but ignored.
+
+       Operators & delimiters (<-, parenthesis, etc.)
+       Also recognized using short regular expressions.
+
+       Decimal literals
+       They are identified as decimal with regex and during tokenization they are assigned as decimal.
+
+       String literals
+       String literals are identified by having an exclamation mark at both ends of the string. During the tokenization
+       the exclamation marks are stripped from the ends of the string.
+
+       Function names
+       They are also identified using a regular expression pattern
+
+
+    4. How can the lexer distinguish between the following lexical elements:
+
+       Function name identifiers & variable name identifiers
+	   The IDENT starts with a lowercase letter while the FUNC_IDENT starts with an uppercase letter. Their regexes are also otherwise dissimilar.
+
+       Keywords & variable name identifiers
+	   When a token is detected that matches the IDENT:s regex it is then checked that it's not a reserved word. In the case it's not the token is 
+	   labeled as IDENT.
+
+       Operators > (greater than) & >= (greator or equal)
+	   The lexer sorts the regexes in descending order so that longer regexes are executed earlier. In other words it's first checked if a >= is 
+	   found and then if just a > is found.
+
+       Info string literals & variables names
+	   The function for detecting string literals is earlier in the code so it's checked before the variable name function.
+
+       Comments & other code
+	   The function for comments is defined before any other function so it's checked before anything else.
+
+       Integer literals & a decimal literals
+	   The lexer fist checks for decimal literals ad only after that integers.
+
+
+    5. Did you implement any extras? If so explain them (what and how)
+
+       I implemented the first suggested extra that was to "Implement comment in a way that it can span multiple lines". The regex i have under 
+	   the t_COMMENT function already recognizes multilinne coments.
+
+
+    6. What did you think of this assignment? What was difficult? What was easy? Did you learn anything useful?
+
+       This assignment was very interesting. At first I thought it was feeling rather cumbersome but the further I went
+       into it, the more fun it began to feel. The most time was spent tweaking with regex,studying python and also
+       getting to know the Python lex YACC. I think everything I learnt doing this assignment was interesting and
+       also potentially useful. At the least I know on a basic level how a lexer works.

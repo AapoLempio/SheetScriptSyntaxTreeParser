@@ -1,0 +1,88 @@
+
+    What is an (abstract) syntax tree and how is it related to other parts in compilation?
+
+        A syntax tree represents the code thats being compiled with a hierarchical structure i.e. a "tree".
+        It comes after the syntax analysis phase of the code compilation process although it seems to be 
+        somewhat interraleted with the syntax analisis phase. What I specifically mean by this is that it seems 
+        to me that the implementation that we have done here happens at the same time as the previous phase. 
+        
+        In short, the syntax tree represents the relationships between the tokens and syntactical elements in the
+        code and presents them using a hierachy from which can be seen, what is done after what. in the code.
+
+    How is the syntax tree generated using the PLY tool? I.e., what things are needed in the code and how are 
+    they related to syntactic rules of the language and the tree?
+
+        The syntax tree is generated using the grammar rules that can be asserted using the PLY tool. The BNF
+        that's described in each function in the "syntaxer" can be split in parts with the argument "p" that's 
+        passed to each function. "p" is a list of the parts in the BNF notation and the parts are split from
+        each other with spaces. The first part, p[0], is what's being carried from a function to another 
+        function. So the rules are made by assigning values to the p[0] in a given function.
+        In the forming of the syntax tree in some function the p[0] can be just assigned to equal the other 
+        parts in the list. This would be the case when the length of the passed list is at maximum two list
+        items and the second part, "p[1]" is a refenence to another function. In other circumstances an object,
+        (node), is created, that's given properties such as nodetype, value, child_* and children_* that carry
+        information about the node. With these rules, the syntax of the program is described in such a manner
+        that the treeprint function that was provided in the phase can print out the syntax tree in the desired
+        manner. The nodes are the basis of the syntax tree generation and without them the treeprint function 
+        will not print the tree in the desired manner.
+    
+    Explain in English what kind of tree is formed in your code from the following syntactic elements:
+
+    Variable definitions
+
+        Variable definition is handled in the p_variable_definition function. In the variable definition
+        function I simply state that p[0] = p[1], because there are only two items in the list. There 
+        are three directions to go. They are the scalar-, range- and sheet- definitions. In In scalar definition 
+        it's checked whether the scalar variable in initialized or not. If not, then, in the tree, it's 
+        child_init is set to none. If it was initialized, then (in other words if the BNF list has exactly five
+        elements) the child_init is set to p[4] (scalar_expr). Similar things happen in the range- and sheet 
+        definitions where it's determined whether or not the variable was initialized and if it was, it's ruled 
+        what happens then.
+
+    For loop
+
+        The for loop is handled in the p_statement function. If the length of th list is 6 then it's checked if
+        the p[1] list item equals 'for'. If yes, a node is created whose node type is set to 'for_stmt' and 
+        children_* list are created for it named "children_ranges" and "children_stmt_list" and they are set 
+        to equal p[2].children_ and p[4].children_ in that order. The children lists are formed in the
+        statement_list and the range_list so that the children_ lists get lists with nodes. 
+    
+    Function call (if you implemented it)
+
+        In p_function_call a p[0] is initialized as a node that is created with nodetype 'function_call'. 
+        Then another node is created with nodetype 'FUNC_IDENT' this way we get a similar structure as in the 
+        examples. Also the value of the other node is set as p[1] so that the value of the identifier is presented
+        in parentheses in the tree. The p[0].child_name is set to be the other node. If the length of the input 
+        list is exactly 5 then the function comes with arguments. A children_ list with arguments is initialized 
+        to be the children_ of p[3]. In the arguments a list containing the argument nodes is created and the 
+        passed to the function call function. Also the usage type of the arguments is set but I don't
+        think it's correct as it is in my implementation as I just say it's scalar in every circumstance. 
+
+    Answer the following based on the syntax definition and your implementation:
+        In which cases is it possible in your implementation to end up with a tree with empty child attributes 
+        (somewhere in the tree there is a place for a child node (or nodes), but there is none)? I.e., in which 
+        situations you end up with tree nodes with child_... attribute being None, or children_... attribute being 
+        an empty list?
+        Are there places in your implementation where you were able to “simplify” the tree by omitting trivial/non-
+        useful nodes or by collecting a recursive repeating structure into a list of child nodes?
+
+        I'm not entirely sure if I understood correctly, but I think there are no circumstances in my implementation
+        that would result in a child_ being empty. 
+        Regarding the second quastion, I think I did something like that with the p_variable_definitions and
+        p_function_or_variable_definition and some other functions. In these functions the children are recursively 
+        added one by one to the children list.
+    
+    Please mention in the document if you didn’t implement functions/subroutines (i.e. you are ok with passing with the minimum grade).
+
+        I tried to implement the functions and subroutines in this phase. Otherwise this implementation is not perfect 
+        and did not pass all the tests perfectly but most of the tree structure seems to be in place.
+
+    What did you think of this assignment? What was difficult? What was easy? Did you learn anything useful?
+
+        This was and interesting phase. It was really interesting to learn how the syntax tree generation works. 
+        It was difficult at fist and still is somewhat to realise how the list we did in the previous phase and this
+        syntax tree generaation relate to each to each other. This is because the syntax tree rules I defined in this 
+        phase conflicted with some of the things I did in the previous phase. What I mean is should the list generation
+        that was done in the previous phase still be intact after the syntax tree generation? It was also tricky to 
+        define the rules themselves because I didn't at first fully grasp just how the bnf notation is executed and 
+        how the rules should be defined based on that.
